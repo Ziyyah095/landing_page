@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Sederhana</title>
+    
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+
+        /* hanya sebagai contoh */
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #ccc; /* Simulasi gambar */
+            display: block;
+        }
+
+        .product-card h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .product-card p.price {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.2em;
+            margin: 5px 0;
+        }
+
+        .product-card p.category {
+            font-style: italic;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Daftar Produk Kami</h1>
+
+    <div class="filter-container">
+        <label for="categoryFilter">Filter Kategori:</label>
+        <select id="categoryFilter" onchange="filterProducts()">
+            <option value="Semua">Semua Kategori</option>
+            <option value="Elektronik">Elektronik</option>
+            <option value="Pakaian">Pakaian</option>
+            <option value="Aksesoris">Aksesoris</option>
+        </select>
+    </div>
+
+    <div id="product-list" class="product-list">
+        </div>
+
+    <script>
+        // 1a. Buat array data produk
+        const products = [
+            {
+                id: 1,
+                name: "Laptop Gaming X1",
+                price: 15000000,
+                description: "Laptop bertenaga tinggi untuk pengalaman gaming maksimal.",
+                image: "Simulasi Laptop", 
+                category: "Elektronik"
+            },
+            {
+                id: 2,
+                name: "Kaos Katun Premium",
+                price: 150000,
+                description: "Kaos nyaman dengan bahan katun 100% berkualitas.",
+                image: "Simulasi Kaos", 
+                category: "Pakaian"
+            },
+            {
+                id: 3,
+                name: "Jam Tangan Pintar Z",
+                price: 750000,
+                description: "Pantau kesehatan dan notifikasi Anda dengan jam pintar ini.",
+                image: "Simulasi Jam",
+                category: "Aksesoris"
+            },
+            {
+                id: 4,
+                name: "Smartphone Flagship",
+                price: 8000000,
+                description: "Kamera canggih dan performa super cepat.",
+                image: "Simulasi Smartphone",
+                category: "Elektronik"
+            },
+            {
+                id: 5,
+                name: "Celana Jeans Slim Fit",
+                price: 350000,
+                description: "Celana jeans dengan potongan modern dan stylish.",
+                image: "Simulasi Jeans", 
+                category: "Pakaian"
+            }
+        ];
+
+        // Dapatkan elemen kontainer produk dari HTML
+        const productListContainer = document.getElementById('product-list');
+
+        // Fungsi untuk memformat harga ke dalam mata uang (IDR)
+        const formatRupiah = (number) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number);
+        }
+
+        // 1b. Gunakan JavaScript untuk menampilkan produk ini di halaman dengan looping.
+        function displayProducts(productArray) {
+            // Kosongkan kontainer terlebih dahulu
+            productListContainer.innerHTML = '';
+
+            // Loop melalui setiap produk
+            productArray.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+
+                // Isi HTML internal dari kartu produk
+                productCard.innerHTML = `
+                    <img src="placeholder.png" alt="${product.image}" title="${product.image}">
+                    <p class="category">Kategori: ${product.category}</p>
+                    <h2>${product.name}</h2>
+                    <p class="price">${formatRupiah(product.price)}</p>
+                    <p>${product.description}</p>
+                `;
+
+                // Tambahkan kartu produk ke kontainer di halaman
+                productListContainer.appendChild(productCard);
+            });
+
+            // Jika tidak ada produk yang ditampilkan
+            if (productArray.length === 0) {
+                productListContainer.innerHTML = '<p> Tidak ada produk yang ditemukan dalam kategori ini.</p>';
+            }
+        }
+
+        // 2. Tambahkan fitur filter sederhana menggunakan JavaScript
+        function filterProducts() {
+            // Dapatkan nilai filter yang dipilih dari dropdown
+            const selectedCategory = document.getElementById('categoryFilter').value;
+
+            let filteredProducts;
+
+            if (selectedCategory === "Semua") {
+                // Jika filter "Semua" dipilih, tampilkan semua produk
+                filteredProducts = products;
+            } else {
+                // Filter array produk berdasarkan kategori yang dipilih
+                filteredProducts = products.filter(product => product.category === selectedCategory);
+            }
+
+            // Tampilkan produk yang telah difilter
+            displayProducts(filteredProducts);
+        }
+
+        // Panggil fungsi untuk pertama kali menampilkan semua produk saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            displayProducts(products);
+        });
+    </script>
+</body>
+</html>
